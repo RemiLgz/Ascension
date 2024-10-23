@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/New Terrain 1.asset.meta
+guid: 629c5972365d99049b3f34b867366b9a
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 15600000
+========
+guid: 0c461ce4304c441468e991112ce6fa4b
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+>>>>>>>> 4a3b2321c1ddf9b1ad04f3fd2288339881c3b5d1:Assets/Animation/NewPlayer.meta
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

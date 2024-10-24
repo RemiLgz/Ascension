@@ -14,8 +14,12 @@ public class PowerBarManager : MonoBehaviour
     public GameObject wavePrefab;
 
     [Header("Power Settings")]
-    public float maxPower = 100f;
     public float powerIncrement = 5f;
+    public float baseMaxPower = 100f;
+    public float difficultyMultiplier = 20f;
+
+    [Header("Spawn Settings")]
+    public int cubesPerClick = 1;  // Nouvelle variable publique pour régler combien de cubes spawnent par clic
 
     [Header("Animation Settings")]
     public float fillDuration = 0.5f;
@@ -35,12 +39,22 @@ public class PowerBarManager : MonoBehaviour
 
     private float currentPower = 0f;
     private int playerPower = 0;
+    private float maxPower;
+
+    void Start()
+    {
+        UpdateMaxPower();
+    }
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            CreateAndAnimateObject();
+            for (int i = 0; i < cubesPerClick; i++)  // Génère le nombre de cubes spécifié
+            {
+                CreateAndAnimateObject();
+            }
+
             CreateWaveEffect();
         }
     }
@@ -73,10 +87,10 @@ public class PowerBarManager : MonoBehaviour
 
     private System.Collections.IEnumerator RotateObject(GameObject obj)
     {
-        while (obj != null) // Vérifie si l'objet existe toujours
+        while (obj != null)
         {
             obj.transform.Rotate(Random.Range(-1f, 1f) * 10f, Random.Range(-1f, 1f) * 10f, Random.Range(-1f, 1f) * 10f);
-            yield return null; // Attend la prochaine frame
+            yield return null;
         }
     }
 
@@ -105,9 +119,15 @@ public class PowerBarManager : MonoBehaviour
             currentPower = 0f;
             playerPower++;
             UpdatePowerText();
+            UpdateMaxPower();
         }
 
         AnimatePowerBar();
+    }
+
+    void UpdateMaxPower()
+    {
+        maxPower = baseMaxPower + (playerPower * difficultyMultiplier);
     }
 
     private Tween _bounceTween;
@@ -125,9 +145,8 @@ public class PowerBarManager : MonoBehaviour
 
     void UpdatePowerText()
     {
-        powerText.text = "" + playerPower;
+        powerText.text = playerPower.ToString();
         powerText.transform.DOKill();
         powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration);
     }
 }
-

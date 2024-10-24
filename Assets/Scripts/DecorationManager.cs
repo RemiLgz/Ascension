@@ -8,7 +8,8 @@ public class DecorationManager : MonoBehaviour
     public float speed = 2.0f;
     public float spawnXPosition = 10.0f;
     public float spawnYPosition = 0.0f;
-    public float destroyOffset = 1.0f; 
+    public float spawnZPosition = 0.0f; // Variable pour ajuster la position de spawn en Z
+    public float destroyOffset = 1.0f;
     public float destroyXPosition = -10.0f;
 
     private float nextSpawnTime;
@@ -30,8 +31,9 @@ public class DecorationManager : MonoBehaviour
     void SpawnObject()
     {
         int randomIndex = Random.Range(0, objectsToSpawn.Length);
-        GameObject newObject = Instantiate(objectsToSpawn[randomIndex], new Vector3(spawnXPosition, spawnYPosition, transform.position.z), Quaternion.identity);
-        newObject.AddComponent<ScrollingObject>().Initialize(speed, destroyXPosition + destroyOffset);  
+        // Utilise la position Z spécifiée dans l'Inspector
+        GameObject newObject = Instantiate(objectsToSpawn[randomIndex], new Vector3(spawnXPosition, spawnYPosition, spawnZPosition), Quaternion.identity);
+        newObject.AddComponent<ScrollingObject>().Initialize(speed, destroyXPosition + destroyOffset);
     }
 
     void ScheduleNextSpawn()

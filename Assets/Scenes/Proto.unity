@@ -2552,6 +2552,11 @@ MonoBehaviour:
   delayBeforeMoving: 0.5
   waveScale: 1
   waveFadeDuration: 0.5
+  levelUpWavePrefab: {fileID: 8120285525663097798, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+  levelUpWaveScale: 0.8
+  levelUpWaveDuration: 0.4
+  levelUpWaveFadeDuration: 1.3
+  fixedWavePosition: {x: -0.186, y: 1.756, z: 0}
 --- !u!1 &876462938
 GameObject:
   m_ObjectHideFlags: 0
@@ -6461,6 +6466,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4ca35ac42f387bd468f7b205518b51e6, type: 3}
+--- !u!1001 &1141190503540937837
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.186
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.756
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070215139266496869, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8120285525663097798, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
+      propertyPath: m_Name
+      value: levelUpWavePrefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6d0c09fdb8f258e4f9b65b14a9552776, type: 3}
 --- !u!1001 &4217877258654604595
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6633,3 +6695,4 @@ SceneRoots:
   - {fileID: 1341040446}
   - {fileID: 876462940}
   - {fileID: 312476733}
+  - {fileID: 1141190503540937837}

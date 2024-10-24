@@ -19,7 +19,7 @@ public class PowerBarManager : MonoBehaviour
     public float difficultyMultiplier = 20f;
 
     [Header("Spawn Settings")]
-    public int cubesPerClick = 1;  // Nouvelle variable publique pour régler combien de cubes spawnent par clic
+    public int cubesPerClick = 1;
 
     [Header("Animation Settings")]
     public float fillDuration = 0.5f;
@@ -36,6 +36,15 @@ public class PowerBarManager : MonoBehaviour
     [Header("Wave Settings")]
     public float waveScale = 2f;
     public float waveFadeDuration = 0.5f;
+
+    [Header("Level Up Animation Settings")]
+    public GameObject levelUpWavePrefab;  // Le cercle pour l'effet de "Level Up"
+    public float levelUpWaveScale = 3f;   // Taille du cercle autour du texte lors du niveau
+    public float levelUpWaveDuration = 0.5f;
+    public float levelUpWaveFadeDuration = 0.5f;
+
+    [Header("Fixed Wave Position (for Level Up)")]
+    public Vector3 fixedWavePosition = new Vector3(0f, 0f, 0f);  // Position fixe pour l'effet visuel
 
     private float currentPower = 0f;
     private int playerPower = 0;
@@ -120,9 +129,29 @@ public class PowerBarManager : MonoBehaviour
             playerPower++;
             UpdatePowerText();
             UpdateMaxPower();
+
+            // Créer l'effet visuel fixe lors du niveau up
+            CreateFixedLevelUpWave();
         }
 
         AnimatePowerBar();
+    }
+
+    void CreateFixedLevelUpWave()
+    {
+        // Crée l'effet de cercle à une position précise de l'écran
+        Vector3 wavePosition = fixedWavePosition;
+
+        GameObject levelUpWave = Instantiate(levelUpWavePrefab, wavePosition, Quaternion.identity);
+        levelUpWave.transform.localScale = Vector3.zero;
+
+        // Animation de l'agrandissement puis de la disparition
+        levelUpWave.transform.DOScale(Vector3.one * levelUpWaveScale, levelUpWaveDuration).OnComplete(() => {
+            SpriteRenderer spriteRenderer = levelUpWave.GetComponent<SpriteRenderer>();
+            spriteRenderer.DOFade(0f, levelUpWaveFadeDuration).OnComplete(() => {
+                Destroy(levelUpWave);  // Détruire l'effet après l'animation
+            });
+        });
     }
 
     void UpdateMaxPower()

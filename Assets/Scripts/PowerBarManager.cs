@@ -2,6 +2,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class PowerBarManager : MonoBehaviour
 {
@@ -38,13 +40,13 @@ public class PowerBarManager : MonoBehaviour
     public float waveFadeDuration = 0.5f;
 
     [Header("Level Up Animation Settings")]
-    public GameObject levelUpWavePrefab;  // Le cercle pour l'effet de "Level Up"
-    public float levelUpWaveScale = 3f;   // Taille du cercle autour du texte lors du niveau
+    public GameObject levelUpWavePrefab;
+    public float levelUpWaveScale = 3f;
     public float levelUpWaveDuration = 0.5f;
     public float levelUpWaveFadeDuration = 0.5f;
 
     [Header("Fixed Wave Position (for Level Up)")]
-    public Vector3 fixedWavePosition = new Vector3(0f, 0f, 0f);  // Position fixe pour l'effet visuel
+    public Vector3 fixedWavePosition = new Vector3(0f, 0f, 0f);
 
     private float currentPower = 0f;
     private int playerPower = 0;
@@ -57,15 +59,34 @@ public class PowerBarManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // Vérifie si le clic est effectué sans élément UI actif sous le pointeur
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverActiveUI())
         {
-            for (int i = 0; i < cubesPerClick; i++)  // Génère le nombre de cubes spécifié
+            for (int i = 0; i < cubesPerClick; i++)
             {
                 CreateAndAnimateObject();
             }
 
             CreateWaveEffect();
         }
+    }
+
+    private bool IsPointerOverActiveUI()
+    {
+        // Vérifie si la souris est au-dessus d'un élément UI et si cet élément est activé dans la hiérarchie
+        PointerEventData eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        // Vérifie chaque élément sous le pointeur
+        foreach (RaycastResult result in results)
+        {
+            if (result.gameObject.activeInHierarchy) // Ignore les éléments désactivés
+            {
+                return true; // Retourne `true` si un élément UI activé est détecté
+            }
+        }
+        return false; // Retourne `false` si aucun élément UI activé n'est détecté
     }
 
     void CreateAndAnimateObject()
@@ -129,8 +150,6 @@ public class PowerBarManager : MonoBehaviour
             playerPower++;
             UpdatePowerText();
             UpdateMaxPower();
-
-            // Créer l'effet visuel fixe lors du niveau up
             CreateFixedLevelUpWave();
         }
 
@@ -139,17 +158,15 @@ public class PowerBarManager : MonoBehaviour
 
     void CreateFixedLevelUpWave()
     {
-        // Crée l'effet de cercle à une position précise de l'écran
         Vector3 wavePosition = fixedWavePosition;
 
         GameObject levelUpWave = Instantiate(levelUpWavePrefab, wavePosition, Quaternion.identity);
         levelUpWave.transform.localScale = Vector3.zero;
 
-        // Animation de l'agrandissement puis de la disparition
         levelUpWave.transform.DOScale(Vector3.one * levelUpWaveScale, levelUpWaveDuration).OnComplete(() => {
             SpriteRenderer spriteRenderer = levelUpWave.GetComponent<SpriteRenderer>();
             spriteRenderer.DOFade(0f, levelUpWaveFadeDuration).OnComplete(() => {
-                Destroy(levelUpWave);  // Détruire l'effet après l'animation
+                Destroy(levelUpWave);
             });
         });
     }

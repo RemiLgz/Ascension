@@ -24,6 +24,9 @@ public class PanelManager : MonoBehaviour
     private Vector3 panel1OriginalPosition;
     private Vector3 panel2OriginalPosition;
 
+    // Booléen pour vérifier si une animation est en cours
+    private bool isAnimating = false;
+
     private void Start()
     {
         // Assure que le bouton "Quitter" est désactivé au démarrage
@@ -37,23 +40,22 @@ public class PanelManager : MonoBehaviour
         canvasGroup1 = panel1.GetComponent<CanvasGroup>() ?? panel1.AddComponent<CanvasGroup>();
         canvasGroup2 = panel2.GetComponent<CanvasGroup>() ?? panel2.AddComponent<CanvasGroup>();
 
-        // Cache les panels au démarrage
+        // Cache les panels et enregistre leur position d'origine
         panel1.SetActive(false);
         panel2.SetActive(false);
-
-        // Enregistre les positions d'origine des panels
         panel1OriginalPosition = panel1.transform.localPosition;
         panel2OriginalPosition = panel2.transform.localPosition;
+
+        // Réinitialise la position et l'opacité au démarrage
+        ResetPanels();
     }
 
     // Méthode pour afficher les panels et gérer les boutons
     public void ShowPanels()
     {
-        // Réinitialise la position et l'opacité des panels
-        panel1.transform.localPosition = panel1OriginalPosition - new Vector3(moveDistance, 0, 0);
-        panel2.transform.localPosition = panel2OriginalPosition - new Vector3(moveDistance, 0, 0);
-        canvasGroup1.alpha = 0f;
-        canvasGroup2.alpha = 0f;
+        // Vérifie si une animation est déjà en cours
+        if (isAnimating) return;
+        isAnimating = true;
 
         // Active les panels avant l'animation
         panel1.SetActive(true);
@@ -68,19 +70,23 @@ public class PanelManager : MonoBehaviour
         canvasGroup2.DOFade(1f, fadeDuration).SetDelay(delayBetweenPanels);
         panel2.transform.DOLocalMoveX(panel2OriginalPosition.x, fadeDuration)
                         .SetEase(Ease.OutBack) // Effet de rebond à la fin
-                        .SetDelay(delayBetweenPanels);
-
-        // Change les boutons après une petite attente pour permettre le rebond
-        DOVirtual.DelayedCall(0.3f, () =>
-        {
-            buttonAmelioration.gameObject.SetActive(false);
-            buttonQuitter.gameObject.SetActive(true);
-        });
+                        .SetDelay(delayBetweenPanels)
+                        .OnComplete(() =>
+                        {
+                            // Termine l'animation et active le bouton "Quitter"
+                            buttonAmelioration.gameObject.SetActive(false);
+                            buttonQuitter.gameObject.SetActive(true);
+                            isAnimating = false;
+                        });
     }
 
     // Méthode pour fermer les panels et remettre le bouton "Amélioration"
     public void ClosePanels()
     {
+        // Vérifie si une animation est déjà en cours
+        if (isAnimating) return;
+        isAnimating = true;
+
         // Animation de fermeture du premier panel
         canvasGroup1.DOFade(0f, fadeDuration);
         panel1.transform.DOLocalMoveX(panel1OriginalPosition.x - moveDistance, fadeDuration)
@@ -90,19 +96,33 @@ public class PanelManager : MonoBehaviour
         canvasGroup2.DOFade(0f, fadeDuration).SetDelay(delayBetweenPanels);
         panel2.transform.DOLocalMoveX(panel2OriginalPosition.x - moveDistance, fadeDuration)
                         .SetEase(Ease.InBack) // Effet de rebond
-                        .SetDelay(delayBetweenPanels);
+                        .SetDelay(delayBetweenPanels)
+                        .OnComplete(() =>
+                        {
+                            // Désactive les panels après la fermeture
+                            panel1.SetActive(false);
+                            panel2.SetActive(false);
 
-        // Réinitialise les boutons après le rebond du bouton "Quitter"
-        DOVirtual.DelayedCall(0.3f, () =>
-        {
-            buttonQuitter.gameObject.SetActive(false);
-            buttonAmelioration.gameObject.SetActive(true);
-        });
+                            // Réinitialise les boutons et panels
+                            buttonQuitter.gameObject.SetActive(false);
+                            buttonAmelioration.gameObject.SetActive(true);
+                            ResetPanels();
+                            isAnimating = false;
+                        });
     }
 
     // Effet de rebond pour les boutons avec une action de callback
     private void BounceButton(Button button, TweenCallback onComplete)
     {
         button.transform.DOPunchScale(new Vector3(0.15f, 0.15f, 0), 0.3f, 10, 1).OnComplete(onComplete);
+    }
+
+    // Réinitialise les positions et l'opacité des panels
+    private void ResetPanels()
+    {
+        panel1.transform.localPosition = panel1OriginalPosition - new Vector3(moveDistance, 0, 0);
+        panel2.transform.localPosition = panel2OriginalPosition - new Vector3(moveDistance, 0, 0);
+        canvasGroup1.alpha = 0f;
+        canvasGroup2.alpha = 0f;
     }
 }

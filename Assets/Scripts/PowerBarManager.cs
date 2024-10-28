@@ -48,18 +48,19 @@ public class PowerBarManager : MonoBehaviour
     [Header("Fixed Wave Position (for Level Up)")]
     public Vector3 fixedWavePosition = new Vector3(0f, 0f, 0f);
 
-    private float currentPower = 0f;
-    private int playerPower = 0;
+    public float currentPower = 0f;
+    public int playerPower = 0;
     private float maxPower;
+    private int displayedPlayerPower; // Pour suivre l'état de playerPower affiché
 
     void Start()
     {
         UpdateMaxPower();
+        UpdatePowerText();  // Initialiser le texte au démarrage
     }
 
     void Update()
     {
-        // Vérifie si le clic est effectué sans élément UI actif sous le pointeur
         if (Input.GetMouseButtonDown(0) && !IsPointerOverActiveUI())
         {
             for (int i = 0; i < cubesPerClick; i++)
@@ -69,24 +70,28 @@ public class PowerBarManager : MonoBehaviour
 
             CreateWaveEffect();
         }
+
+        // Vérifie si le power a changé avant de mettre à jour le texte
+        if (playerPower != displayedPlayerPower)
+        {
+            UpdatePowerText();
+        }
     }
 
     private bool IsPointerOverActiveUI()
     {
-        // Vérifie si la souris est au-dessus d'un élément UI et si cet élément est activé dans la hiérarchie
         PointerEventData eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
         List<RaycastResult> results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(eventData, results);
 
-        // Vérifie chaque élément sous le pointeur
         foreach (RaycastResult result in results)
         {
-            if (result.gameObject.activeInHierarchy) // Ignore les éléments désactivés
+            if (result.gameObject.activeInHierarchy)
             {
-                return true; // Retourne `true` si un élément UI activé est détecté
+                return true;
             }
         }
-        return false; // Retourne `false` si aucun élément UI activé n'est détecté
+        return false;
     }
 
     void CreateAndAnimateObject()
@@ -148,7 +153,6 @@ public class PowerBarManager : MonoBehaviour
         {
             currentPower = 0f;
             playerPower++;
-            UpdatePowerText();
             UpdateMaxPower();
             CreateFixedLevelUpWave();
         }
@@ -191,7 +195,11 @@ public class PowerBarManager : MonoBehaviour
 
     void UpdatePowerText()
     {
+        // Met à jour le texte du power
         powerText.text = playerPower.ToString();
+        displayedPlayerPower = playerPower;  // Met à jour la valeur affichée
+
+        // Joue l'animation de punch uniquement au changement de niveau
         powerText.transform.DOKill();
         powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration);
     }

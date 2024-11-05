@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyDestroyer : MonoBehaviour
 {
@@ -8,12 +9,24 @@ public class EnemyDestroyer : MonoBehaviour
     public float debrisForce = 500f;
     public int debrisCount = 10;
     public Camera mainCamera;
-    public Canvas flashCanvas; // Référence au Canvas pour le flash
+    public Canvas flashCanvas; // Assigner le FlashCanvas ici
     public float shakeDuration = 0.5f;
     public float shakeIntensity = 0.3f;
     public float flashDuration = 0.1f;
     public float debrisLifetime = 2.0f;
     private bool isFlashing = false;
+
+    private Image flashImage; // Référence à l'image blanche pour le flash
+
+    void Start()
+    {
+        // Obtenir la référence à l'image du flash
+        flashImage = flashCanvas.GetComponentInChildren<Image>();
+        if (flashImage == null)
+        {
+            Debug.LogError("Aucune Image trouvée dans FlashCanvas pour le flash blanc.");
+        }
+    }
 
     void Update()
     {
@@ -76,24 +89,21 @@ public class EnemyDestroyer : MonoBehaviour
     {
         isFlashing = true;
 
-        GameObject flash = new GameObject("Flash");
-        flash.transform.SetParent(flashCanvas.transform);
-        flash.transform.localPosition = Vector3.zero;
+        if (flashImage == null) yield break; // S'assurer que flashImage existe
 
-        Canvas canvas = flashCanvas; // Utilise le Canvas choisi
-        GameObject flashImage = new GameObject("FlashImage");
-        flashImage.transform.SetParent(flash.transform);
-
-        UnityEngine.UI.Image image = flashImage.AddComponent<UnityEngine.UI.Image>();
-        RectTransform rectTransform = image.GetComponent<RectTransform>();
-        rectTransform.anchorMin = Vector2.zero;
-        rectTransform.anchorMax = Vector2.one;
-        rectTransform.sizeDelta = Vector2.zero;
-
-        image.color = new Color(1, 1, 1, 1);
+        flashImage.color = new Color(1, 1, 1, 1); // Rend l'image complètement blanche
 
         yield return new WaitForSeconds(flashDuration);
-        Destroy(flash);
+
+        // Fondu de l'image pour la faire disparaître
+        for (float t = 0; t < flashDuration; t += Time.deltaTime)
+        {
+            float alpha = Mathf.Lerp(1, 0, t / flashDuration);
+            flashImage.color = new Color(1, 1, 1, alpha);
+            yield return null;
+        }
+
+        flashImage.color = new Color(1, 1, 1, 0); // Rend l'image complètement transparente
         isFlashing = false;
     }
 }

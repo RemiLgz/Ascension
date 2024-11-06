@@ -9,24 +9,17 @@ public class EnemyDestroyer : MonoBehaviour
     public float debrisForce = 500f;
     public int debrisCount = 10;
     public Camera mainCamera;
-    public Canvas flashCanvas; // Assigner le FlashCanvas ici
+    public Canvas flashCanvas; // Référence au Canvas pour le flash blanc
+    public Image slashImage; // Image "slash" de remplissage
     public float shakeDuration = 0.5f;
     public float shakeIntensity = 0.3f;
-    public float flashDuration = 0.1f;
     public float debrisLifetime = 2.0f;
-    private bool isFlashing = false;
+    public float fillSpeed = 8f; // Accélère le remplissage du slash
+    public float flashDuration = 0.1f; // Durée du flash
+    public float triggerPercentage = 0.7f; // Pourcentage de remplissage pour déclencher les effets
 
-    private Image flashImage; // Référence à l'image blanche pour le flash
-
-    void Start()
-    {
-        // Obtenir la référence à l'image du flash
-        flashImage = flashCanvas.GetComponentInChildren<Image>();
-        if (flashImage == null)
-        {
-            Debug.LogError("Aucune Image trouvée dans FlashCanvas pour le flash blanc.");
-        }
-    }
+    private bool isFilling = false;
+    private GameObject currentEnemy;
 
     void Update()
     {
@@ -34,37 +27,60 @@ public class EnemyDestroyer : MonoBehaviour
 
         foreach (GameObject enemy in enemies)
         {
-            if (enemy.transform.position.x <= destroyPoint.transform.position.x)
+            if (!isFilling && enemy.transform.position.x <= destroyPoint.transform.position.x)
             {
-                ExplodeEnemy(enemy);
+                currentEnemy = enemy;
+                isFilling = true; // Déclenche le remplissage du slash
             }
+        }
+
+        if (isFilling)
+        {
+            FillSlashImage();
         }
     }
 
-    void ExplodeEnemy(GameObject enemy)
+    void FillSlashImage()
     {
-        foreach (GameObject debrisPrefab in debrisPrefabs)
+        // Remplissage rapide du slash
+        slashImage.fillAmount = Mathf.Lerp(slashImage.fillAmount, 1f, Time.deltaTime * fillSpeed);
+
+        // Déclenchement des effets lorsque le pourcentage de remplissage est atteint
+        if (slashImage.fillAmount >= triggerPercentage)
         {
-            for (int i = 0; i < debrisCount; i++)
+            slashImage.fillAmount = 0; // Réinitialise l'image
+            isFilling = false; // Réinitialise l'état de remplissage
+            TriggerEffects(); // Déclenche les effets (destruction de l'ennemi, etc.)
+        }
+    }
+
+    void TriggerEffects()
+    {
+        if (currentEnemy != null)
+        {
+            foreach (GameObject debrisPrefab in debrisPrefabs)
             {
-                GameObject debris = Instantiate(debrisPrefab, enemy.transform.position, Random.rotation);
-                Rigidbody rb = debris.GetComponent<Rigidbody>();
-                if (rb != null)
+                for (int i = 0; i < debrisCount; i++)
                 {
-                    Vector3 randomDirection = new Vector3(Random.Range(-0.5f, 0.5f), 1, Random.Range(-0.5f, 0.5f)).normalized;
-                    rb.AddForce(randomDirection * debrisForce, ForceMode.Impulse);
+                    GameObject debris = Instantiate(debrisPrefab, currentEnemy.transform.position, Random.rotation);
+                    Rigidbody rb = debris.GetComponent<Rigidbody>();
+                    if (rb != null)
+                    {
+                        Vector3 randomDirection = new Vector3(Random.Range(-0.5f, 0.5f), 1, Random.Range(-0.5f, 0.5f)).normalized;
+                        rb.AddForce(randomDirection * debrisForce, ForceMode.Impulse);
+                    }
+                    Destroy(debris, debrisLifetime);
                 }
-                Destroy(debris, debrisLifetime);
             }
-        }
 
-        if (mainCamera != null)
-        {
-            StartCoroutine(CameraShake());
-            if (!isFlashing) StartCoroutine(ScreenFlash());
-        }
+            if (mainCamera != null)
+            {
+                StartCoroutine(CameraShake());
+            }
 
-        Destroy(enemy);
+            StartCoroutine(ScreenFlash()); // Ajout du flash blanc
+            Destroy(currentEnemy); // Détruit l'ennemi après l'explosion
+        }
     }
 
     System.Collections.IEnumerator CameraShake()
@@ -87,23 +103,19 @@ public class EnemyDestroyer : MonoBehaviour
 
     System.Collections.IEnumerator ScreenFlash()
     {
-        isFlashing = true;
+        GameObject flash = new GameObject("Flash");
+        flash.transform.SetParent(flashCanvas.transform);
+        flash.transform.localPosition = Vector3.zero;
 
-        if (flashImage == null) yield break; // S'assurer que flashImage existe
+        UnityEngine.UI.Image image = flash.AddComponent<UnityEngine.UI.Image>();
+        RectTransform rectTransform = image.GetComponent<RectTransform>();
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.sizeDelta = Vector2.zero;
 
-        flashImage.color = new Color(1, 1, 1, 1); // Rend l'image complètement blanche
+        image.color = new Color(1, 1, 1, 1);
 
         yield return new WaitForSeconds(flashDuration);
-
-        // Fondu de l'image pour la faire disparaître
-        for (float t = 0; t < flashDuration; t += Time.deltaTime)
-        {
-            float alpha = Mathf.Lerp(1, 0, t / flashDuration);
-            flashImage.color = new Color(1, 1, 1, alpha);
-            yield return null;
-        }
-
-        flashImage.color = new Color(1, 1, 1, 0); // Rend l'image complètement transparente
-        isFlashing = false;
+        Destroy(flash);
     }
 }

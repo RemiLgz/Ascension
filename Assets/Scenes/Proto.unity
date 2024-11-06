@@ -1859,6 +1859,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bridge3D (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 7517287397047681637, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7872827400619089164, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -2498,6 +2502,10 @@ PrefabInstance:
     - target: {fileID: 7517287397047681637, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
       propertyPath: m_Name
       value: Bridge3D (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7517287397047681637, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7872827400619089164, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -4387,7 +4395,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -10337,6 +10345,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bridge3D (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 7517287397047681637, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7872827400619089164, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -10415,7 +10427,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5a2d4d52a546e9a498f3328d1405eea1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f045bc7e7b5bb554cbd568d047894b95, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10576,6 +10588,10 @@ PrefabInstance:
     - target: {fileID: 7517287397047681637, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
       propertyPath: m_Name
       value: Bridge3D
+      objectReference: {fileID: 0}
+    - target: {fileID: 7517287397047681637, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7872827400619089164, guid: 01e2385398dd66047b6705c4d6e125fc, type: 3}
       propertyPath: m_Materials.Array.data[0]

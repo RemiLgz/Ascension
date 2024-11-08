@@ -78,6 +78,14 @@ public class PowerBarManager : MonoBehaviour
         }
     }
 
+    
+
+    void Awake()
+    {
+        // Cette ligne permet de rendre cet objet persistant lors du changement de scène
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     private bool IsPointerOverActiveUI()
     {
         PointerEventData eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };

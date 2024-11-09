@@ -222,7 +222,6 @@ public class PowerBarManager : MonoBehaviour
 
         // Animation de mise à jour du texte
         powerText.transform.DOKill();
-        powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration).SetEase(Ease.OutBack);
     }
 
     // Méthode pour gérer un achat d'objet

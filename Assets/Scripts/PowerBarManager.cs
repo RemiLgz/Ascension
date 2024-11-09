@@ -77,10 +77,22 @@ public class PowerBarManager : MonoBehaviour
         // Vérifie si currentPower a atteint maxPower pour augmenter playerPower
         if (currentPower >= maxPower)
         {
-            currentPower = 0f;
+            // Calculer la puissance excédentaire
+            float excessPower = currentPower - maxPower;
+
+            // Ajouter 1 à playerPower
             playerPower++;
+
+            // Réinitialiser currentPower avec la puissance excédentaire
+            currentPower = excessPower;
+
+            // Mettre à jour la puissance maximale en fonction du niveau du joueur
             UpdateMaxPower();
+
+            // Créer un effet de montée de niveau
             CreateFixedLevelUpWave();
+
+            // Mettre à jour le texte de la puissance
             UpdatePowerText();
         }
 
@@ -90,8 +102,6 @@ public class PowerBarManager : MonoBehaviour
             UpdatePowerText();
         }
     }
-
-
 
     private bool IsPointerOverActiveUI()
     {
@@ -200,10 +210,19 @@ public class PowerBarManager : MonoBehaviour
 
     void UpdatePowerText()
     {
+        // Enregistrer la taille actuelle du texte avant toute animation.
+        Vector3 defaultScale = powerText.transform.localScale;
+
+        // Réinitialiser la taille du texte à sa taille initiale définie dans la scène
+        powerText.transform.localScale = defaultScale;
+
+        // Mettre à jour le texte pour afficher la valeur de power
         powerText.text = playerPower.ToString();
         displayedPlayerPower = playerPower;
 
+        // Appliquer l'animation de "punch" sans affecter la taille par défaut
         powerText.transform.DOKill();
-        powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration);
+        powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration).SetEase(Ease.OutBack);
     }
+
 }

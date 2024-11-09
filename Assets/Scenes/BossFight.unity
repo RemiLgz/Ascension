@@ -19698,7 +19698,7 @@ MonoBehaviour:
   - {fileID: 41573757}
   - {fileID: 1090711877}
   requiredClicks: 15
-  bossHealth: 150
+  bossHealth: 110
   damagePerRound: 12
   bossHealthText: {fileID: 2066309104}
   panel: {fileID: 1427605343}

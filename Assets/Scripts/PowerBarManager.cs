@@ -91,10 +91,7 @@ public class PowerBarManager : MonoBehaviour
         }
     }
 
-    void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
+
 
     private bool IsPointerOverActiveUI()
     {

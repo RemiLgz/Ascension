@@ -51,12 +51,12 @@ public class PowerBarManager : MonoBehaviour
     public float currentPower = 0f;
     public int playerPower = 0;
     private float maxPower;
-    private int displayedPlayerPower; // Pour suivre l'état de playerPower affiché
+    private int displayedPlayerPower;
 
     void Start()
     {
         UpdateMaxPower();
-        UpdatePowerText();  // Initialiser le texte au démarrage
+        UpdatePowerText();
     }
 
     void Update()
@@ -71,18 +71,28 @@ public class PowerBarManager : MonoBehaviour
             CreateWaveEffect();
         }
 
-        // Vérifie si le power a changé avant de mettre à jour le texte
+        // Remplissage en temps réel de la barre de puissance
+        AnimatePowerBar();
+
+        // Vérifie si currentPower a atteint maxPower pour augmenter playerPower
+        if (currentPower >= maxPower)
+        {
+            currentPower = 0f;
+            playerPower++;
+            UpdateMaxPower();
+            CreateFixedLevelUpWave();
+            UpdatePowerText();
+        }
+
+        // Met à jour le texte du niveau si playerPower change
         if (playerPower != displayedPlayerPower)
         {
             UpdatePowerText();
         }
     }
 
-    
-
     void Awake()
     {
-        // Cette ligne permet de rendre cet objet persistant lors du changement de scène
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -156,16 +166,6 @@ public class PowerBarManager : MonoBehaviour
     void IncreasePower()
     {
         currentPower += powerIncrement;
-
-        if (currentPower >= maxPower)
-        {
-            currentPower = 0f;
-            playerPower++;
-            UpdateMaxPower();
-            CreateFixedLevelUpWave();
-        }
-
-        AnimatePowerBar();
     }
 
     void CreateFixedLevelUpWave()
@@ -203,11 +203,9 @@ public class PowerBarManager : MonoBehaviour
 
     void UpdatePowerText()
     {
-        // Met à jour le texte du power
         powerText.text = playerPower.ToString();
-        displayedPlayerPower = playerPower;  // Met à jour la valeur affichée
+        displayedPlayerPower = playerPower;
 
-        // Joue l'animation de punch uniquement au changement de niveau
         powerText.transform.DOKill();
         powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration);
     }

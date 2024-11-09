@@ -9,17 +9,20 @@ public class EnemyDestroyer : MonoBehaviour
     public float debrisForce = 500f;
     public int debrisCount = 10;
     public Camera mainCamera;
-    public Canvas flashCanvas; // Référence au Canvas pour le flash blanc
-    public Image slashImage; // Image "slash" de remplissage
+    public Canvas flashCanvas;
+    public Image slashImage;
     public float shakeDuration = 0.5f;
     public float shakeIntensity = 0.3f;
     public float debrisLifetime = 2.0f;
-    public float fillSpeed = 8f; // Accélère le remplissage du slash
-    public float flashDuration = 0.1f; // Durée du flash
-    public float triggerPercentage = 0.7f; // Pourcentage de remplissage pour déclencher les effets
+    public float fillSpeed = 8f;
+    public float flashDuration = 0.1f;
+    public float triggerPercentage = 0.7f;
 
     private bool isFilling = false;
     private GameObject currentEnemy;
+
+    public PowerBarManager powerBarManager;
+    public int powerIncrease = 10;
 
     void Update()
     {
@@ -30,7 +33,7 @@ public class EnemyDestroyer : MonoBehaviour
             if (!isFilling && enemy.transform.position.x <= destroyPoint.transform.position.x)
             {
                 currentEnemy = enemy;
-                isFilling = true; // Déclenche le remplissage du slash
+                isFilling = true;
             }
         }
 
@@ -42,15 +45,13 @@ public class EnemyDestroyer : MonoBehaviour
 
     void FillSlashImage()
     {
-        // Remplissage rapide du slash
         slashImage.fillAmount = Mathf.Lerp(slashImage.fillAmount, 1f, Time.deltaTime * fillSpeed);
 
-        // Déclenchement des effets lorsque le pourcentage de remplissage est atteint
         if (slashImage.fillAmount >= triggerPercentage)
         {
-            slashImage.fillAmount = 0; // Réinitialise l'image
-            isFilling = false; // Réinitialise l'état de remplissage
-            TriggerEffects(); // Déclenche les effets (destruction de l'ennemi, etc.)
+            slashImage.fillAmount = 0;
+            isFilling = false;
+            TriggerEffects();
         }
     }
 
@@ -78,8 +79,8 @@ public class EnemyDestroyer : MonoBehaviour
                 StartCoroutine(CameraShake());
             }
 
-            StartCoroutine(ScreenFlash()); // Ajout du flash blanc
-            Destroy(currentEnemy); // Détruit l'ennemi après l'explosion
+            StartCoroutine(ScreenFlash());
+            Destroy(currentEnemy);
         }
     }
 
@@ -116,6 +117,18 @@ public class EnemyDestroyer : MonoBehaviour
         image.color = new Color(1, 1, 1, 1);
 
         yield return new WaitForSeconds(flashDuration);
+
+        // Ajout à currentPower pendant le flash
+        if (powerBarManager != null)
+        {
+            powerBarManager.currentPower += powerIncrease;
+            Debug.Log($"currentPower après flash blanc: {powerBarManager.currentPower}");
+        }
+        else
+        {
+            Debug.LogWarning("PowerBarManager n'est pas assigné dans EnemyDestroyer.");
+        }
+
         Destroy(flash);
     }
 }

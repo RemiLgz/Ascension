@@ -192,8 +192,8 @@ public class ImageSwitcher : MonoBehaviour
 
     private IEnumerator GrowEffect(Transform target, float duration)
     {
-        target.localScale = Vector3.zero;
-        Vector3 targetScale = Vector3.one * 1.2f;
+        target.localScale = Vector3.zero; // Commencer avec une échelle nulle
+        Vector3 targetScale = Vector3.one / 4f; // Diviser la taille par 4 (c'est-à-dire 0.25x l'échelle par défaut)
         float time = 0;
 
         while (time < duration)
@@ -203,7 +203,7 @@ public class ImageSwitcher : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
-        target.localScale = targetScale / 1.2f;
+        target.localScale = targetScale;
     }
 
     private IEnumerator ShrinkEffect(Transform target, float duration)

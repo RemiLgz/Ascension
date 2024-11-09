@@ -18,7 +18,7 @@ public class PowerBarManager : MonoBehaviour
     [Header("Power Settings")]
     public float powerIncrement = 5f;
     public float baseMaxPower = 100f;
-    public float difficultyMultiplier = 20f;
+    public float difficultyMultiplier = 20f; // Ajout du multiplicateur de difficulté
 
     [Header("Spawn Settings")]
     public int cubesPerClick = 1;
@@ -48,19 +48,26 @@ public class PowerBarManager : MonoBehaviour
     [Header("Fixed Wave Position (for Level Up)")]
     public Vector3 fixedWavePosition = new Vector3(0f, 0f, 0f);
 
+    // Valeurs
     public float currentPower = 0f;
     public int playerPower = 0;
-    private float maxPower;
+    public float maxPower; // La maxPower dépendra de playerPower et de difficultyMultiplier
+
     private int displayedPlayerPower;
 
     void Start()
     {
+        // Initialisation maxPower dès le départ en fonction de playerPower et du multiplicateur
         UpdateMaxPower();
         UpdatePowerText();
     }
 
     void Update()
     {
+        // Toujours recalculer maxPower en temps réel en fonction de playerPower
+        UpdateMaxPower();
+
+        // Vérifier les clics pour créer et animer les objets
         if (Input.GetMouseButtonDown(0) && !IsPointerOverActiveUI())
         {
             for (int i = 0; i < cubesPerClick; i++)
@@ -68,35 +75,27 @@ public class PowerBarManager : MonoBehaviour
                 CreateAndAnimateObject();
             }
 
+            // Créer l'effet de vague à chaque clic
             CreateWaveEffect();
         }
 
-        // Remplissage en temps réel de la barre de puissance
+        // Remplir la barre de puissance en fonction de currentPower et maxPower
         AnimatePowerBar();
 
-        // Vérifie si currentPower a atteint maxPower pour augmenter playerPower
+        // Si currentPower dépasse maxPower, augmenter playerPower
         if (currentPower >= maxPower)
         {
-            // Calculer la puissance excédentaire
             float excessPower = currentPower - maxPower;
-
-            // Ajouter 1 à playerPower
-            playerPower++;
-
-            // Réinitialiser currentPower avec la puissance excédentaire
-            currentPower = excessPower;
-
-            // Mettre à jour la puissance maximale en fonction du niveau du joueur
-            UpdateMaxPower();
-
-            // Créer un effet de montée de niveau
+            playerPower++; // Augmenter le niveau du joueur
+            currentPower = excessPower; // Réinitialiser currentPower avec l'excédent
+            // Créer l'effet visuel de montée de niveau
             CreateFixedLevelUpWave();
 
-            // Mettre à jour le texte de la puissance
+            // Mettre à jour l'affichage du texte
             UpdatePowerText();
         }
 
-        // Met à jour le texte du niveau si playerPower change
+        // Met à jour le texte si playerPower change
         if (playerPower != displayedPlayerPower)
         {
             UpdatePowerText();
@@ -121,6 +120,7 @@ public class PowerBarManager : MonoBehaviour
 
     void CreateAndAnimateObject()
     {
+        // Créer un objet et l'animer
         Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
         GameObject obj = Instantiate(objectPrefab, spawnPosition, Quaternion.identity);
 
@@ -156,6 +156,7 @@ public class PowerBarManager : MonoBehaviour
 
     void CreateWaveEffect()
     {
+        // Créer l'effet de vague à la position du clic
         Vector3 spawnPosition = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
         spawnPosition.z = 0f;
 
@@ -172,11 +173,13 @@ public class PowerBarManager : MonoBehaviour
 
     void IncreasePower()
     {
+        // Ajouter de la puissance actuelle à chaque clic
         currentPower += powerIncrement;
     }
 
     void CreateFixedLevelUpWave()
     {
+        // Créer l'onde de niveau
         Vector3 wavePosition = fixedWavePosition;
 
         GameObject levelUpWave = Instantiate(levelUpWavePrefab, wavePosition, Quaternion.identity);
@@ -190,8 +193,10 @@ public class PowerBarManager : MonoBehaviour
         });
     }
 
+    // Update maxPower en fonction de playerPower à chaque frame
     void UpdateMaxPower()
     {
+        // Calcul de maxPower en fonction de playerPower et du multiplicateur de difficulté
         maxPower = baseMaxPower + (playerPower * difficultyMultiplier);
     }
 
@@ -200,6 +205,7 @@ public class PowerBarManager : MonoBehaviour
 
     void AnimatePowerBar()
     {
+        // Remplir la barre de puissance en temps réel
         float normalizedPower = currentPower / maxPower;
         _fillTween?.Kill();
         _fillTween = powerBar.DOFillAmount(normalizedPower, fillDuration);
@@ -210,19 +216,36 @@ public class PowerBarManager : MonoBehaviour
 
     void UpdatePowerText()
     {
-        // Enregistrer la taille actuelle du texte avant toute animation.
-        Vector3 defaultScale = powerText.transform.localScale;
-
-        // Réinitialiser la taille du texte à sa taille initiale définie dans la scène
-        powerText.transform.localScale = defaultScale;
-
-        // Mettre à jour le texte pour afficher la valeur de power
+        // Met à jour le texte affichant la puissance du joueur
         powerText.text = playerPower.ToString();
         displayedPlayerPower = playerPower;
 
-        // Appliquer l'animation de "punch" sans affecter la taille par défaut
+        // Animation de mise à jour du texte
         powerText.transform.DOKill();
         powerText.transform.DOPunchScale(Vector2.one * bounceScale, bounceDuration).SetEase(Ease.OutBack);
     }
 
+    // Méthode pour gérer un achat d'objet
+    public void PurchaseItem(float playerPowerChange)
+    {
+        // Modifier playerPower directement
+        playerPower += Mathf.FloorToInt(playerPowerChange);
+
+        // Mettre à jour maxPower immédiatement en fonction du nouveau playerPower et du multiplicateur
+        UpdateMaxPower();
+
+        // Mettre à jour l'affichage de la puissance
+        UpdatePowerText();
+    }
+
+    // Méthode pour retirer de la puissance du joueur
+    public void RemovePower(int amount)
+    {
+        // Réduire le playerPower et mettre à jour maxPower immédiatement
+        playerPower = Mathf.Max(0, playerPower - amount);
+        UpdateMaxPower();
+
+        // Mettre à jour l'affichage de la puissance
+        UpdatePowerText();
+    }
 }

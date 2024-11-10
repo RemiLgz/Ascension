@@ -23,6 +23,7 @@ public class EnemyDestroyer : MonoBehaviour
 
     public PowerBarManager powerBarManager;
     public int powerIncrease = 10;
+    private bool isFirstEnemyDestroyed = false;  // Variable pour savoir si c'est le premier ennemi
 
     void Update()
     {
@@ -59,6 +60,13 @@ public class EnemyDestroyer : MonoBehaviour
     {
         if (currentEnemy != null)
         {
+            // Vérifier si c'est le premier ennemi
+            if (!isFirstEnemyDestroyed)
+            {
+                powerIncrease = 200;  // Augmenter la valeur de powerIncrease lors de la première destruction
+                isFirstEnemyDestroyed = true;  // Marquer que le premier ennemi a été détruit
+            }
+
             foreach (GameObject debrisPrefab in debrisPrefabs)
             {
                 for (int i = 0; i < debrisCount; i++)

@@ -14272,7 +14272,7 @@ MonoBehaviour:
   powerBarManager: {fileID: 871993256}
   imageToDestroy: {fileID: 2000687789}
   panelToActivate: {fileID: 2129542647}
-  powerThreshold: 20
+  powerThreshold: 15
   imageShrinkDuration: 0.5
   panelFadeInDuration: 0.5
 --- !u!114 &545838147
@@ -14923,7 +14923,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Puissance recommand\xE9e : 24"
+  m_text: "Puissance recommand\xE9e : 19"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b4c2533b4a3007f49ab09e02ec993b89, type: 2}
   m_sharedMaterial: {fileID: -8029903358142917887, guid: b4c2533b4a3007f49ab09e02ec993b89, type: 2}
@@ -23767,7 +23767,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 8
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b4c2533b4a3007f49ab09e02ec993b89, type: 2}
   m_sharedMaterial: {fileID: -8029903358142917887, guid: b4c2533b4a3007f49ab09e02ec993b89, type: 2}
@@ -34325,7 +34325,7 @@ MonoBehaviour:
   panelToClose: {fileID: 1457864232}
   panelToOpen: {fileID: 2095467994}
   switchButton: {fileID: 516147727}
-  prix: 10
+  prix: 8
   animationDuration: 0.5
 --- !u!1 &1460222392
 GameObject:
@@ -40598,7 +40598,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Vous devez poss\xE9der 20 Essences avant de vous mesurer \xE0 Aur\xE9lus."
+  m_text: "Vous devez poss\xE9der 15 Essences avant de vous mesurer \xE0 Aur\xE9lus."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b4c2533b4a3007f49ab09e02ec993b89, type: 2}
   m_sharedMaterial: {fileID: -8029903358142917887, guid: b4c2533b4a3007f49ab09e02ec993b89, type: 2}
@@ -40849,6 +40849,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1704724365}
+  - component: {fileID: 1704724371}
   - component: {fileID: 1704724369}
   - component: {fileID: 1704724368}
   - component: {fileID: 1704724367}
@@ -40996,6 +40997,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1704724371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1704724364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87b2732851507374388a0381123a7470, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetButton: {fileID: 1704724366}
+  punchScale: 0.25
+  punchVibrato: 5
+  punchDuration: 1.2
+  brightnessDuration: 0.5
+  pauseDuration: 1.1
 --- !u!1 &1709109264
 GameObject:
   m_ObjectHideFlags: 0

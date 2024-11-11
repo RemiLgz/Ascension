@@ -25,6 +25,10 @@ public class ImageSwitcher : MonoBehaviour
     private int previousIndex = -1;
     private int displayedHealth;
 
+    private bool timerStarted = false;
+    private float timeElapsed = 0f;
+    public TextMeshProUGUI timerText;
+
     void Start()
     {
         if (images.Count == 0) return;
@@ -32,6 +36,15 @@ public class ImageSwitcher : MonoBehaviour
         UpdateBossHealthUI();
         HideAllImages();
         ShowRandomImage();
+    }
+
+    void Update()
+    {
+        if (timerStarted)
+        {
+            timeElapsed += Time.deltaTime;
+            UpdateTimerUI();
+        }
     }
 
     public void OnImageClick()
@@ -151,6 +164,13 @@ public class ImageSwitcher : MonoBehaviour
         currentImage.gameObject.SetActive(true);
 
         ResetFilledCircleSize();
+
+        // Start the timer if it's not already started
+        if (!timerStarted)
+        {
+            timerStarted = true;
+        }
+
         StartCoroutine(GrowEffect(currentImage.transform, 0.4f));
     }
 
@@ -265,5 +285,16 @@ public class ImageSwitcher : MonoBehaviour
         }
 
         Destroy(flashImage.gameObject);
+    }
+
+    private void UpdateTimerUI()
+    {
+        if (timerText != null)
+        {
+            int minutes = Mathf.FloorToInt(timeElapsed / 60);
+            int seconds = Mathf.FloorToInt(timeElapsed % 60);
+            int milliseconds = Mathf.FloorToInt((timeElapsed * 100) % 100);
+            timerText.text = string.Format("{0:00}:{1:00}:{2:00}", minutes, seconds, milliseconds);
+        }
     }
 }

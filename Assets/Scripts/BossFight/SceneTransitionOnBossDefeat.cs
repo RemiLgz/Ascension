@@ -41,7 +41,7 @@ public class SceneTransitionOnBossDefeat : MonoBehaviour
         yield return new WaitForSeconds(delayBeforeSceneChange);
 
         // Charge la scène suivante (par exemple "SceneName" doit être remplacé par le nom réel de votre scène)
-        SceneManager.LoadScene("Proto");
+        SceneManager.LoadScene("End");
     }
 
     // Coroutine pour gérer le fondu au noir
